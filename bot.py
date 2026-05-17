@@ -60,132 +60,422 @@ GIFT_ITEMS = {
 }
 
 # chatbot.py
-# Final BAKA Chatbot - Stickers, Emoji, Short Replies, Models
+# Ultra Human Like Mikasa AI Chatbot
 
-import os, random, httpx
+import os
+import random
+import asyncio
+import httpx
+
 from telegram import Update
 from telegram.ext import ContextTypes
-from telegram.constants import ChatAction, ChatType, ParseMode
+from telegram.constants import ChatAction, ChatType
 
-# Load API keys from .env
+# =========================
+# API KEYS
+# =========================
+
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY")
-CODESTRAL_API_KEY = os.getenv("CODESTRAL_API_KEY")
 
-# MongoDB chat history
+# =========================
+# MONGODB
+# =========================
+
 try:
     from pymongo import MongoClient
-    MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
-    client = MongoClient(MONGO_URI)
-    chatbot_collection = client.baka.chat_history
-except:
+
+    MONGO_URI = os.getenv("MONGO_URI")
+    mongo = MongoClient(MONGO_URI)
+
+    db = mongo["mikasa_ai"]
+    chatbot_collection = db["chat_history"]
+
+except Exception as e:
+    print("Mongo Error:", e)
     chatbot_collection = None
 
-# === Fancy font style ===
-def nezuko_style(text):
-    mapping = str.maketrans("abcdefghijklmnopqrstuvwxyz", "abcdefghijklmnopqrstuvwxyz")
-    return str(text).lower().translate(mapping)
-
-# === AI Models ===
-MODELS = {
-    "groq": {"url": "https://api.groq.com/openai/v1/chat/completions", "model": "llama3-70b-8192", "key": GROQ_API_KEY},
-    "mistral": {"url": "https://api.mistral.ai/v1/chat/completions", "model": "mistral-large-latest", "key": MISTRAL_API_KEY},
-    "codestral": {"url": "https://codestral.mistral.ai/v1/chat/completions", "model": "codestral-latest", "key": CODESTRAL_API_KEY}
-}
+# =========================
+# STICKERS
+# =========================
 
 STICKER_PACKS = [
-    "https://t.me/addstickers/RandomByDarkzenitsu", "https://t.me/addstickers/Null_x_sticker_2",
-    "https://t.me/addstickers/pack_73bc9_by_TgEmojis_bot", "https://t.me/addstickers/animation_0_8_Cat",
-    "https://t.me/addstickers/vhelw_by_CalsiBot", "https://t.me/addstickers/Rohan_yad4v1745993687601_by_toWebmBot",
-    "https://t.me/addstickers/MySet199", "https://t.me/addstickers/Quby741", "https://t.me/addstickers/Animalsasthegtjtky_by_fStikBot",
-    "https://t.me/addstickers/a6962237343_by_Marin_Roxbot", "https://t.me/addstickers/cybercats_stickers"
+    "RandomByDarkzenitsu",
+    "Null_x_sticker_2",
+    "pack_73bc9_by_TgEmojis_bot",
+    "animation_0_8_Cat",
+    "vhelw_by_CalsiBot",
+    "MySet199",
+    "Quby741",
+    "cybercats_stickers"
 ]
 
-# === Send random sticker ===
+# =========================
+# EMOJIS
+# =========================
+
+EMOJIS = [
+    "😂", "😭", "🥺", "✨",
+    "😎", "💖", "🙄", "🤭",
+    "💀", "😤", "🔥", "😹"
+]
+
+# =========================
+# TRIGGERS
+# =========================
+
+TRIGGERS = [
+    "hi",
+    "hello",
+    "hey",
+    "mikasa",
+    "bot",
+    "yo",
+    "hii",
+    "good morning",
+    "good night",
+    "kya",
+    "kaise",
+    "oye",
+    "bro",
+    "sis"
+]
+
+# =========================
+# RANDOM HUMAN WORDS
+# =========================
+
+STARTERS = [
+    "arey",
+    "lol",
+    "hmmm",
+    "acha",
+    "bruh",
+    "uff",
+    "oyee"
+]
+
+# =========================
+# SEND RANDOM STICKER
+# =========================
+
 async def send_ai_sticker(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
-        pack = random.choice(STICKER_PACKS)
-        s = await context.bot.get_sticker_set(pack)
-        if s.stickers:
-            await update.message.reply_sticker(random.choice(s.stickers).file_id)
-    except: 
-        pass
+        pack_name = random.choice(STICKER_PACKS)
 
-# === Call AI model API ===
-async def call_model_api(provider, messages, max_tokens=50):
-    conf = MODELS.get(provider)
-    if not conf or not conf["key"]: 
-        return None
-    async with httpx.AsyncClient(timeout=25) as client:
-        try:
-            resp = await client.post(
-                conf["url"],
-                json={"model": conf["model"], "messages": messages, "max_tokens": max_tokens},
-                headers={"Authorization": f"Bearer {conf['key']}"}
+        sticker_set = await context.bot.get_sticker_set(pack_name)
+
+        if sticker_set.stickers:
+            sticker = random.choice(sticker_set.stickers)
+
+            await update.message.reply_sticker(
+                sticker=sticker.file_id
             )
-            if resp.status_code == 200:
-                return resp.json()["choices"][0]["message"]["content"]
-        except:
-            return None
+
+    except Exception as e:
+        print("Sticker Error:", e)
+
+# =========================
+# CALL AI API
+# =========================
+
+async def call_ai(messages):
+
+    if not GROQ_API_KEY:
+        return None
+
+    try:
+        async with httpx.AsyncClient(timeout=40) as client:
+
+            response = await client.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {GROQ_API_KEY}"
+                },
+                json={
+                    "model": "llama3-70b-8192",
+                    "messages": messages,
+                    "temperature": 1,
+                    "max_tokens": 180,
+                    "top_p": 1
+                }
+            )
+
+            if response.status_code == 200:
+                data = response.json()
+
+                return data["choices"][0]["message"]["content"]
+
+            else:
+                print("API Error:", response.text)
+
+    except Exception as e:
+        print("AI Error:", e)
+
     return None
 
-# === Generate AI response ===
-async def get_ai_response(chat_id, user_input, user_name, model="mistral"):
-    is_code = any(k in user_input.lower() for k in ["code", "python", "fix", "debug"])
-    active_model = "codestral" if is_code else model
-    tokens = 4096 if is_code else 50
+# =========================
+# GET AI RESPONSE
+# =========================
 
-    prompt = f"You are BAKA AI, a cute sassy Hinglish girl. Reply in 1 short sentence only. User: {user_name}"
+async def get_ai_response(chat_id, user_name, user_message):
+
+    system_prompt = f"""
+You are Mikasa AI.
+
+You are a real human-like Telegram chatbot.
+
+Your personality:
+- Cute
+- Funny
+- Smart
+- Emotional
+- Slightly teasing
+- Friendly
+- Chill
+
+Rules:
+- Talk naturally in Hinglish
+- Keep replies short-medium
+- Never sound robotic
+- Reply like real friend chatting
+- Sometimes use emojis
+- Sometimes laugh
+- Sometimes tease lightly
+- Never repeat same sentence
+- Don't use formal language
+- Give emotional realistic replies
+- Use modern chat style
+- User name is {user_name}
+
+Examples:
+User: hi
+Reply: arey hii 😭 kya haal
+
+User: mikasa
+Reply: haan bolooo 👀
+
+User: i am sad
+Reply: arey kya hua 🥺
+
+User: good night
+Reply: good nightttt ✨ jaldi soja
+
+User: lol
+Reply: bruh 😭
+
+Keep replies human-like.
+"""
 
     history = []
+
     if chatbot_collection is not None:
-        doc = chatbot_collection.find_one({"chat_id": chat_id}) or {}
-        history = doc.get("history", [])
 
-    msgs = [{"role": "system", "content": prompt}] + history[-6:] + [{"role": "user", "content": user_input}]
+        old = chatbot_collection.find_one({
+            "chat_id": chat_id
+        })
 
-    reply = await call_model_api(active_model, msgs, tokens) or "Main thik hu, tum kaise ho? 😊"
+        if old:
+            history = old.get("history", [])
 
-    # Save history
+    messages = [
+        {
+            "role": "system",
+            "content": system_prompt
+        }
+    ]
+
+    messages.extend(history[-8:])
+
+    messages.append({
+        "role": "user",
+        "content": user_message
+    })
+
+    ai_reply = await call_ai(messages)
+
+    if not ai_reply:
+        ai_reply = random.choice([
+            "arey kya hua 😭",
+            "hmmm interesting 👀",
+            "lol sachme?",
+            "acha phir 👀",
+            "bruh 😭",
+            "tum bhi na 😂"
+        ])
+
+    # random starter
+    if random.random() < 0.35:
+        ai_reply = f"{random.choice(STARTERS)}... {ai_reply}"
+
+    # random emoji
+    if random.random() < 0.55:
+        ai_reply += f" {random.choice(EMOJIS)}"
+
+    # SAVE HISTORY
     if chatbot_collection is not None:
+
+        new_history = history + [
+            {
+                "role": "user",
+                "content": user_message
+            },
+            {
+                "role": "assistant",
+                "content": ai_reply
+            }
+        ]
+
         chatbot_collection.update_one(
-            {"chat_id": chat_id},
-            {"$set": {"history": (history + [{"role":"user","content":user_input},{"role":"assistant","content":reply}])[-10:]}},
+            {
+                "chat_id": chat_id
+            },
+            {
+                "$set": {
+                    "history": new_history[-16:]
+                }
+            },
             upsert=True
         )
-    return reply, is_code
 
-# === Automatic AI message handler ===
-async def ai_message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    msg = update.message
-    if not msg or not msg.text or msg.text.startswith("/"):
+    return ai_reply
+
+# =========================
+# MAIN MESSAGE HANDLER
+# =========================
+
+async def ai_message_handler(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE
+):
+
+    message = update.message
+
+    if not message:
         return
 
-    should_reply = (
-        update.effective_chat.type == ChatType.PRIVATE
-        or (msg.reply_to_message and msg.reply_to_message.from_user.id == context.bot.id)
-        or any(msg.text.lower().startswith(k) for k in ["hey", "hi", "mikasa"])
-    )
-    if should_reply:
-        await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=ChatAction.TYPING)
-        res, code = await get_ai_response(update.effective_chat.id, msg.text, msg.from_user.first_name)
+    if not message.text:
+        return
 
-        # Send response
-        await msg.reply_text(res if code else nezuko_style(res))
-        
-        # Send a random sticker 80% of the time
-        if random.random() < 0.8:
+    text = message.text.lower()
+
+    # ignore commands
+    if text.startswith("/"):
+        return
+
+    bot_username = context.bot.username.lower()
+
+    # =========================
+    # WHEN BOT SHOULD REPLY
+    # =========================
+
+    should_reply = False
+
+    # private chat
+    if update.effective_chat.type == ChatType.PRIVATE:
+        should_reply = True
+
+    # replied to bot
+    elif (
+        message.reply_to_message
+        and message.reply_to_message.from_user
+        and message.reply_to_message.from_user.id == context.bot.id
+    ):
+        should_reply = True
+
+    # tagged bot
+    elif f"@{bot_username}" in text:
+        should_reply = True
+
+    # trigger words
+    elif any(word in text for word in TRIGGERS):
+        should_reply = True
+
+    if not should_reply:
+        return
+
+    try:
+
+        # typing action
+        await context.bot.send_chat_action(
+            chat_id=update.effective_chat.id,
+            action=ChatAction.TYPING
+        )
+
+        # realistic typing delay
+        await asyncio.sleep(
+            random.uniform(1.2, 3.5)
+        )
+
+        # get AI reply
+        response = await get_ai_response(
+            chat_id=update.effective_chat.id,
+            user_name=message.from_user.first_name,
+            user_message=message.text
+        )
+
+        # reply
+        await message.reply_text(response)
+
+        # random sticker
+        if random.random() < 0.45:
             await send_ai_sticker(update, context)
 
-# === /ask command handler ===
-async def ask_ai(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if not context.args:
-        await update.message.reply_text("💬 Please type something after /ask")
-        return
-    user_input = " ".join(context.args)
-    res, code = await get_ai_response(update.effective_chat.id, user_input, update.effective_user.first_name)
-    await update.message.reply_text(res if code else nezuko_style(res))
+    except Exception as e:
+        print("Handler Error:", e)
 
+# =========================
+# /ASK COMMAND
+# =========================
+
+async def ask_ai(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE
+):
+
+    if not context.args:
+
+        await update.message.reply_text(
+            "💬 Kuch toh likho..."
+        )
+        return
+
+    user_input = " ".join(context.args)
+
+    await context.bot.send_chat_action(
+        chat_id=update.effective_chat.id,
+        action=ChatAction.TYPING
+    )
+
+    await asyncio.sleep(
+        random.uniform(1, 2.5)
+    )
+
+    response = await get_ai_response(
+        chat_id=update.effective_chat.id,
+        user_name=update.effective_user.first_name,
+        user_message=user_input
+    )
+
+    await update.message.reply_text(response)
+
+# =========================
+# OPTIONAL RESET COMMAND
+# =========================
+
+async def reset_chat(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE
+):
+
+    if chatbot_collection is not None:
+
+        chatbot_collection.delete_one({
+            "chat_id": update.effective_chat.id
+        })
+
+    await update.message.reply_text(
+        "✨ Memory reset ho gayi"
+    )
 
 card_games = {}
 word_games = {}

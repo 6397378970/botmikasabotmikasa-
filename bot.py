@@ -68,7 +68,6 @@ from telegram.ext import ContextTypes
 from telegram.constants import ChatAction, ChatType, ParseMode
 
 # Load API keys from .env
-load_dotenv()
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY")
 CODESTRAL_API_KEY = os.getenv("CODESTRAL_API_KEY")

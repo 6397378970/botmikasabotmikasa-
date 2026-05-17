@@ -329,7 +329,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     p = prefix(user)
 
     text = (
-        "✨ *Hey I'm Pikachu and these are my features below* 👇"
+        "✨ Hey I'm mikasa\n\n Enjoy and play 🚀"
     )
 
     keyboard = [
@@ -347,10 +347,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             InlineKeyboardButton(
                 "📢 Channel",
                 url="https://t.me/anonymous_rides"
-            ),
-            InlineKeyboardButton(
-                "❓ Help",
-                callback_data="help_menu"
             )
         ],
         [
@@ -373,7 +369,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     register_user(update)
     text = (
-        "⚡ *Pɪᴋᴀᴄʜᴜ Bᴏᴛ — Cᴏᴍᴍᴀɴᴅꜱ* 🎮\n\n"
+        "⚡ *MIKASA BOT — Cᴏᴍᴍᴀɴᴅꜱ* 🎮\n\n"
         "💰 *Eᴄᴏɴᴏᴍʏ:*\n"
         "`/bal` — Balance check\n"
         "`/daily` — Daily reward\n"
@@ -427,7 +423,7 @@ async def bal(update: Update, context: ContextTypes.DEFAULT_TYPE):
         user = get_user(u.id)
 
     rank = get_global_rank(user['user_id'])
-    status = "☠️ Dᴇᴀᴅ" if user['is_dead'] else "✅ Aʟɪᴠᴇ"
+    status = "☠️ Dᴇᴀᴅ" if user['is_dead'] else "Aʟɪᴠᴇ"
     xp_rank = get_xp_rank(user['xp'])
     xp_bar = get_xp_bar(user['xp'])
     p = prefix(user, html=True)

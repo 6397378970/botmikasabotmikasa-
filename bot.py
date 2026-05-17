@@ -66,7 +66,6 @@ import os, random, httpx
 from telegram import Update
 from telegram.ext import ContextTypes
 from telegram.constants import ChatAction, ChatType, ParseMode
-from dotenv import load_dotenv
 
 # Load API keys from .env
 load_dotenv()

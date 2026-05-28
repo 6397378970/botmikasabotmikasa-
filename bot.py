@@ -315,7 +315,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    photo = "/mnt/data/Screenshot 2026-05-28 061921(1).png"
+    photo = "https://files.catbox.moe/bg4vn9.png"
 
     await update.message.reply_photo(
         photo=photo,

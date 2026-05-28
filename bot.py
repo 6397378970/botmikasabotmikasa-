@@ -284,56 +284,52 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = get_user(u.id)
     p = prefix(user)
 
-    text = f"""
-🥰 *Hey {u.first_name}* ,
-
-This is *「 PIKACHU MUSIC BOT 」* 🎵 !
-
-🎶 A powerful music player bot with awesome and useful features.
-
-👇 *Add me to your group and enjoy music in VC.*
-"""
+    text = (
+        "✨ *Hey I'm 𝜧𝜾𝜿𝛼𝜹𝛼 and these are my features below* 👇"
+    )
 
     keyboard = [
         [
             InlineKeyboardButton(
-                "➕ Add Me To Your Group",
-                url=f"https://t.me/{context.bot.username}?startgroup=true"
-            )
-        ],
-        [
-            InlineKeyboardButton(
-                "👥 Support",
+                "👥 Groups",
                 url="https://t.me/midnight_chatclub"
             ),
             InlineKeyboardButton(
-                "📢 Channel",
-                url="https://t.me/anonymous_rides"
+                "👑 Owner",
+                url="https://t.me/light_speedy"
             )
         ],
         [
             InlineKeyboardButton(
-                "👑 Owner",
-                url="https://t.me/light_speedy"
+                "📢 Channel",
+                url="https://t.me/anonymous_rides"
+            ),
+            InlineKeyboardButton(
+                "❓ Help",
+                callback_data="help_menu"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "➕ Add Me To Your Group",
+                url=f"https://t.me/{context.bot.username}?startgroup=true"
             )
         ]
     ]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    photo_url = "https://graph.org/file/0b3f9d1df1e8f77c4c8d4.jpg"
-
-    await update.message.reply_photo(
-        photo=photo_url,
-        caption=text,
+    await update.message.reply_text(
+        text=text,
         reply_markup=reply_markup,
         parse_mode=ParseMode.MARKDOWN
     )
 
+
 async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     register_user(update)
     text = (
-        "⚡ *Pɪᴋᴀᴄʜᴜ Bᴏᴛ — Cᴏᴍᴍᴀɴᴅꜱ* 🎮\n\n"
+        "⚡ *𝜧𝜾𝜿𝛼𝜹𝛼 Bᴏᴛ — Cᴏᴍᴍᴀɴᴅꜱ* 🎮\n\n"
         "💰 *Eᴄᴏɴᴏᴍʏ:*\n"
         "`/bal` — Balance check\n"
         "`/daily` — Daily reward\n"

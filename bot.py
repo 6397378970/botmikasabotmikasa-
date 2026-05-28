@@ -303,10 +303,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             InlineKeyboardButton(
                 "📢 Channel",
                 url="https://t.me/anonymous_rides"
-            ),
-            InlineKeyboardButton(
-                "❓ Help",
-                callback_data="help_menu"
             )
         ],
         [
@@ -319,13 +315,15 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    await update.message.reply_text(
-        text=text,
+    photo = "/mnt/data/Screenshot 2026-05-28 061921(1).png"
+
+    await update.message.reply_photo(
+        photo=photo,
+        caption=text,
         reply_markup=reply_markup,
         parse_mode=ParseMode.MARKDOWN
     )
-
-
+    
 async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     register_user(update)
     text = (

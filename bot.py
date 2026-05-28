@@ -287,15 +287,18 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = f"""
 🥰 *Hey {u.first_name}* ,
 
-This is mikasa !
+This is *「 PIKACHU MUSIC BOT 」* 🎵 !
 
-🎶 A powerful game bot with awesome and useful features.
+🎶 A powerful music player bot with awesome and useful features.
+
+👇 *Add me to your group and enjoy music in VC.*
+"""
 
     keyboard = [
         [
             InlineKeyboardButton(
                 "➕ Add Me To Your Group",
-                url=f"https://t.me/mikasa_ibot?startgroup=true"
+                url=f"https://t.me/{context.bot.username}?startgroup=true"
             )
         ],
         [
@@ -326,7 +329,6 @@ This is mikasa !
         reply_markup=reply_markup,
         parse_mode=ParseMode.MARKDOWN
     )
-
 
 async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     register_user(update)

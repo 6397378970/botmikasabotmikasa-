@@ -41,7 +41,7 @@ logger = logging.getLogger(__name__)
 
 TOKEN = "8674194296:AAGqxTPggfH52IyefdVP8565SFOJcmspOwI"
 
-OWNERS = ['light_speedy', 'Itz_Aanya_07', 'light_speedi', 'ig_izumi']
+OWNERS = ['light_speedy', 'alenachistyakova_m', 'speedy_fighter', 'its_aanya_07']
 
 GIFT_ITEMS = {
     'rose':       {'emoji': '🌹', 'price': 500,  'name': 'Rᴏꜱᴇ'},
@@ -59,423 +59,89 @@ GIFT_ITEMS = {
     'boyfriend':  {'emoji': '👨‍❤️‍👨', 'price': 1000, 'name': 'Bᴏʏ Fʀɪᴇɴᴅ'},
 }
 
-# chatbot.py
-# Ultra Human Like Mikasa AI Chatbot
-
-import os
-import random
-import asyncio
-import httpx
-
-from telegram import Update
-from telegram.ext import ContextTypes
-from telegram.constants import ChatAction, ChatType
-
-# =========================
-# API KEYS
-# =========================
-
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-
-# =========================
-# MONGODB
-# =========================
-
-try:
-    from pymongo import MongoClient
-
-    MONGO_URI = os.getenv("MONGO_URI")
-    mongo = MongoClient(MONGO_URI)
-
-    db = mongo["mikasa_ai"]
-    chatbot_collection = db["chat_history"]
-
-except Exception as e:
-    print("Mongo Error:", e)
-    chatbot_collection = None
-
-# =========================
-# STICKERS
-# =========================
-
-STICKER_PACKS = [
-    "RandomByDarkzenitsu",
-    "Null_x_sticker_2",
-    "pack_73bc9_by_TgEmojis_bot",
-    "animation_0_8_Cat",
-    "vhelw_by_CalsiBot",
-    "MySet199",
-    "Quby741",
-    "cybercats_stickers"
+WORDS = [
+    'pikachu', 'telegram', 'python', 'gaming', 'winner', 'dragon',
+    'thunder', 'rainbow', 'galaxy', 'warrior', 'champion', 'diamond',
+    'crystal', 'shadow', 'ninja', 'rocket', 'legend', 'phoenix',
+    'cobra', 'tiger', 'panther', 'falcon', 'storm', 'blaze', 'spark',
+    'viper', 'alpha', 'omega', 'zenith', 'cosmic', 'nebula', 'aurora',
+    'eclipse', 'turbo', 'hyper', 'ultra', 'mega', 'super', 'rapid',
+    'swift', 'flash', 'bolt', 'surge', 'prism', 'cipher', 'vertex',
 ]
 
-# =========================
-# EMOJIS
-# =========================
-
-EMOJIS = [
-    "😂", "😭", "🥺", "✨",
-    "😎", "💖", "🙄", "🤭",
-    "💀", "😤", "🔥", "😹"
+CHATBOT_RESPONSES = [
+    "haha lol 😂",
+    "bro same 💀",
+    "no way 😭",
+    "that's actually fire 🔥",
+    "okay but why 😭😭",
+    "bro i was literally thinking the same 😭",
+    "lmaooo 💀",
+    "nah that's crazy 😂",
+    "facts fr fr 💯",
+    "bro stop 😭",
+    "okay that's valid 🫡",
+    "LMAO 💀💀",
+    "wait what 😭",
+    "bro i can't 😭😭",
+    "that's honestly so true 💀",
+    "ngl that's kinda funny 😂",
+    "okay okay okay 👀",
+    "i- 😶",
+    "bruh 💀",
+    "oof 😬",
+    "slay 💅",
+    "sheesh 😮",
+    "based 🫡",
+    "no literally 😭",
+    "that's so real 💯",
+    "haha nice 😄",
+    "bro chill 😅",
+    "ok and? 😂",
+    "wait fr? 😮",
+    "omg 😲",
+    "bro...... 💀",
+    "i mean fair enough 🤷",
+    "you're not wrong 👀",
+    "wild 😂",
+    "respectfully.... no 😭",
+    "hahaha okay 😂",
+    "bro really said that 💀",
+    "say less 👌",
+    "yeah yeah yeah 😄",
+    "nah bro ☠️",
+    "on god 💯",
+    "that's a W 🏆",
+    "L take bro 💀",
+    "i agree tbh 🤝",
+    "aight bet 👍",
+    "bro is wilding 😂",
+    "this is sending me 😭",
+    "real ones know 💯",
+    "not you being right 😭",
+    "okay i fw that 👀",
 ]
 
-# =========================
-# TRIGGERS
-# =========================
+STICKER_COLLECTION_FILE = 'telegram-bot/sticker_collection.json'
 
-TRIGGERS = [
-    "hi",
-    "hello",
-    "hey",
-    "mikasa",
-    "bot",
-    "yo",
-    "hii",
-    "good morning",
-    "good night",
-    "kya",
-    "kaise",
-    "oye",
-    "bro",
-    "sis"
-]
 
-# =========================
-# RANDOM HUMAN WORDS
-# =========================
-
-STARTERS = [
-    "arey",
-    "lol",
-    "hmmm",
-    "acha",
-    "bruh",
-    "uff",
-    "oyee"
-]
-
-# =========================
-# SEND RANDOM STICKER
-# =========================
-
-async def send_ai_sticker(update: Update, context: ContextTypes.DEFAULT_TYPE):
+def load_sticker_collection():
     try:
-        pack_name = random.choice(STICKER_PACKS)
+        with open(STICKER_COLLECTION_FILE, 'r') as f:
+            return json.load(f)
+    except Exception:
+        return []
 
-        sticker_set = await context.bot.get_sticker_set(pack_name)
 
-        if sticker_set.stickers:
-            sticker = random.choice(sticker_set.stickers)
-
-            await update.message.reply_sticker(
-                sticker=sticker.file_id
-            )
-
-    except Exception as e:
-        print("Sticker Error:", e)
-
-# =========================
-# CALL AI API
-# =========================
-
-async def call_ai(messages):
-
-    if not GROQ_API_KEY:
-        return None
-
+def save_sticker_collection(collection):
     try:
-        async with httpx.AsyncClient(timeout=40) as client:
+        with open(STICKER_COLLECTION_FILE, 'w') as f:
+            json.dump(collection, f)
+    except Exception:
+        pass
 
-            response = await client.post(
-                "https://api.groq.com/openai/v1/chat/completions",
-                headers={
-                    "Authorization": f"Bearer {GROQ_API_KEY}"
-                },
-                json={
-                    "model": "llama3-70b-8192",
-                    "messages": messages,
-                    "temperature": 1,
-                    "max_tokens": 180,
-                    "top_p": 1
-                }
-            )
 
-            if response.status_code == 200:
-                data = response.json()
-
-                return data["choices"][0]["message"]["content"]
-
-            else:
-                print("API Error:", response.text)
-
-    except Exception as e:
-        print("AI Error:", e)
-
-    return None
-
-# =========================
-# GET AI RESPONSE
-# =========================
-
-async def get_ai_response(chat_id, user_name, user_message):
-
-    system_prompt = f"""
-You are Mikasa AI.
-
-You are a real human-like Telegram chatbot.
-
-Your personality:
-- Cute
-- Funny
-- Smart
-- Emotional
-- Slightly teasing
-- Friendly
-- Chill
-
-Rules:
-- Talk naturally in Hinglish
-- Keep replies short-medium
-- Never sound robotic
-- Reply like real friend chatting
-- Sometimes use emojis
-- Sometimes laugh
-- Sometimes tease lightly
-- Never repeat same sentence
-- Don't use formal language
-- Give emotional realistic replies
-- Use modern chat style
-- User name is {user_name}
-
-Examples:
-User: hi
-Reply: arey hii 😭 kya haal
-
-User: mikasa
-Reply: haan bolooo 👀
-
-User: i am sad
-Reply: arey kya hua 🥺
-
-User: good night
-Reply: good nightttt ✨ jaldi soja
-
-User: lol
-Reply: bruh 😭
-
-Keep replies human-like.
-"""
-
-    history = []
-
-    if chatbot_collection is not None:
-
-        old = chatbot_collection.find_one({
-            "chat_id": chat_id
-        })
-
-        if old:
-            history = old.get("history", [])
-
-    messages = [
-        {
-            "role": "system",
-            "content": system_prompt
-        }
-    ]
-
-    messages.extend(history[-8:])
-
-    messages.append({
-        "role": "user",
-        "content": user_message
-    })
-
-    ai_reply = await call_ai(messages)
-
-    if not ai_reply:
-        ai_reply = random.choice([
-            "arey kya hua 😭",
-            "hmmm interesting 👀",
-            "lol sachme?",
-            "acha phir 👀",
-            "bruh 😭",
-            "tum bhi na 😂"
-        ])
-
-    # random starter
-    if random.random() < 0.35:
-        ai_reply = f"{random.choice(STARTERS)}... {ai_reply}"
-
-    # random emoji
-    if random.random() < 0.55:
-        ai_reply += f" {random.choice(EMOJIS)}"
-
-    # SAVE HISTORY
-    if chatbot_collection is not None:
-
-        new_history = history + [
-            {
-                "role": "user",
-                "content": user_message
-            },
-            {
-                "role": "assistant",
-                "content": ai_reply
-            }
-        ]
-
-        chatbot_collection.update_one(
-            {
-                "chat_id": chat_id
-            },
-            {
-                "$set": {
-                    "history": new_history[-16:]
-                }
-            },
-            upsert=True
-        )
-
-    return ai_reply
-
-# =========================
-# MAIN MESSAGE HANDLER
-# =========================
-
-async def ai_message_handler(
-    update: Update,
-    context: ContextTypes.DEFAULT_TYPE
-):
-
-    message = update.message
-
-    if not message:
-        return
-
-    if not message.text:
-        return
-
-    text = message.text.lower()
-
-    # ignore commands
-    if text.startswith("/"):
-        return
-
-    bot_username = context.bot.username.lower()
-
-    # =========================
-    # WHEN BOT SHOULD REPLY
-    # =========================
-
-    should_reply = False
-
-    # private chat
-    if update.effective_chat.type == ChatType.PRIVATE:
-        should_reply = True
-
-    # replied to bot
-    elif (
-        message.reply_to_message
-        and message.reply_to_message.from_user
-        and message.reply_to_message.from_user.id == context.bot.id
-    ):
-        should_reply = True
-
-    # tagged bot
-    elif f"@{bot_username}" in text:
-        should_reply = True
-
-    # trigger words
-    elif any(word in text for word in TRIGGERS):
-        should_reply = True
-
-    if not should_reply:
-        return
-
-    try:
-
-        # typing action
-        await context.bot.send_chat_action(
-            chat_id=update.effective_chat.id,
-            action=ChatAction.TYPING
-        )
-
-        # realistic typing delay
-        await asyncio.sleep(
-            random.uniform(1.2, 3.5)
-        )
-
-        # get AI reply
-        response = await get_ai_response(
-            chat_id=update.effective_chat.id,
-            user_name=message.from_user.first_name,
-            user_message=message.text
-        )
-
-        # reply
-        await message.reply_text(response)
-
-        # random sticker
-        if random.random() < 0.45:
-            await send_ai_sticker(update, context)
-
-    except Exception as e:
-        print("Handler Error:", e)
-
-# =========================
-# /ASK COMMAND
-# =========================
-
-async def ask_ai(
-    update: Update,
-    context: ContextTypes.DEFAULT_TYPE
-):
-
-    if not context.args:
-
-        await update.message.reply_text(
-            "💬 Kuch toh likho..."
-        )
-        return
-
-    user_input = " ".join(context.args)
-
-    await context.bot.send_chat_action(
-        chat_id=update.effective_chat.id,
-        action=ChatAction.TYPING
-    )
-
-    await asyncio.sleep(
-        random.uniform(1, 2.5)
-    )
-
-    response = await get_ai_response(
-        chat_id=update.effective_chat.id,
-        user_name=update.effective_user.first_name,
-        user_message=user_input
-    )
-
-    await update.message.reply_text(response)
-
-# =========================
-# OPTIONAL RESET COMMAND
-# =========================
-
-async def reset_chat(
-    update: Update,
-    context: ContextTypes.DEFAULT_TYPE
-):
-
-    if chatbot_collection is not None:
-
-        chatbot_collection.delete_one({
-            "chat_id": update.effective_chat.id
-        })
-
-    await update.message.reply_text(
-        "✨ Memory reset ho gayi"
-    )
+sticker_collection = load_sticker_collection()
 
 card_games = {}
 word_games = {}
@@ -660,32 +326,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
-
-async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(
-        "🎮 Bot Commands:\n/start - Start the bot\n/help - Get help",
-        parse_mode=ParseMode.MARKDOWN
-    )
-
-def main():
-    """Start the bot"""
-    application = Application.builder().token(TOKEN).build()
-    
-    # Add command handlers
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("help", help_command))
-    
-    # Start bot
-    print("🤖 Mikasa Bot is starting...")
-    application.run_polling(allowed_updates=Update.ALL_TYPES)
-
-if __name__ == '__main__':
-    main()
-
 async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     register_user(update)
     text = (
-        "⚡ *MIKASA BOT — Cᴏᴍᴍᴀɴᴅꜱ* 🎮\n\n"
+        "⚡ *Pɪᴋᴀᴄʜᴜ Bᴏᴛ — Cᴏᴍᴍᴀɴᴅꜱ* 🎮\n\n"
         "💰 *Eᴄᴏɴᴏᴍʏ:*\n"
         "`/bal` — Balance check\n"
         "`/daily` — Daily reward\n"
@@ -739,7 +383,7 @@ async def bal(update: Update, context: ContextTypes.DEFAULT_TYPE):
         user = get_user(u.id)
 
     rank = get_global_rank(user['user_id'])
-    status = "☠️ Dᴇᴀᴅ" if user['is_dead'] else "Aʟɪᴠᴇ"
+    status = "☠️ Dᴇᴀᴅ" if user['is_dead'] else "✅ Aʟɪᴠᴇ"
     xp_rank = get_xp_rank(user['xp'])
     xp_bar = get_xp_bar(user['xp'])
     p = prefix(user, html=True)
@@ -3572,7 +3216,7 @@ def main():
     app.add_handler(MessageHandler(filters.ANIMATION, animation_handler))
     app.add_handler(MessageHandler(filters.VOICE, voice_handler))
 
-    print("✅ mikasa Bot is running! ⚡")
+    print("✅ Pikachu Bot is running! ⚡")
     app.run_polling(allowed_updates=Update.ALL_TYPES)
 
 

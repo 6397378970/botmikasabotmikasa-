@@ -284,43 +284,45 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = get_user(u.id)
     p = prefix(user)
 
-    text = (
-        "✨ *Hey I'm Pikachu and these are my features below* 👇"
-    )
+    text = f"""
+🥰 *Hey {u.first_name}* ,
+
+This is mikasa !
+
+🎶 A powerful game bot with awesome and useful features.
 
     keyboard = [
         [
             InlineKeyboardButton(
-                "👥 Groups",
+                "➕ Add Me To Your Group",
+                url=f"https://t.me/mikasa_ibot?startgroup=true"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "👥 Support",
                 url="https://t.me/midnight_chatclub"
             ),
             InlineKeyboardButton(
-                "👑 Owner",
-                url="https://t.me/light_speedy"
-            )
-        ],
-        [
-            InlineKeyboardButton(
                 "📢 Channel",
                 url="https://t.me/anonymous_rides"
-            ),
-            InlineKeyboardButton(
-                "❓ Help",
-                callback_data="help_menu"
             )
         ],
         [
             InlineKeyboardButton(
-                "➕ Add Me To Your Group",
-                url=f"https://t.me/{context.bot.username}?startgroup=true"
+                "👑 Owner",
+                url="https://t.me/light_speedy"
             )
         ]
     ]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    await update.message.reply_text(
-        text=text,
+    photo_url = "https://graph.org/file/0b3f9d1df1e8f77c4c8d4.jpg"
+
+    await update.message.reply_photo(
+        photo=photo_url,
+        caption=text,
         reply_markup=reply_markup,
         parse_mode=ParseMode.MARKDOWN
     )

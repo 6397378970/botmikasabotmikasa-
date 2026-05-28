@@ -731,6 +731,148 @@ async def revive(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode=ParseMode.MARKDOWN
         )
 
+from telegram import Update
+from telegram.ext import ContextTypes, CommandHandler
+from telegram.constants import ChatMemberStatus
+
+
+# =========================================================
+# /title command
+# Usage:
+# /title @username Owner
+# Reply karke:
+# /title Legend
+# =========================================================
+
+async def title_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    chat = update.effective_chat
+    user = update.effective_user
+
+    # Check admin
+    member = await context.bot.get_chat_member(chat.id, user.id)
+
+    if member.status not in [
+        ChatMemberStatus.ADMINISTRATOR,
+        ChatMemberStatus.OWNER
+    ]:
+        return await update.message.reply_text(
+            "❌ Sirf admins title change kar sakte hain."
+        )
+
+    # Bot permissions check
+    bot_member = await context.bot.get_chat_member(
+        chat.id,
+        context.bot.id
+    )
+
+    if not bot_member.can_promote_members:
+        return await update.message.reply_text(
+            "❌ Mujhe Promote Members permission chahiye."
+        )
+
+    target_user = None
+    custom_title = None
+
+    # =========================
+    # Reply method
+    # =========================
+    if update.message.reply_to_message:
+
+        target_user = update.message.reply_to_message.from_user
+
+        if len(context.args) < 1:
+            return await update.message.reply_text(
+                "❌ Example:\n/title Legend"
+            )
+
+        custom_title = " ".join(context.args)
+
+    # =========================
+    # Username/UserID method
+    # =========================
+    else:
+
+        if len(context.args) < 2:
+            return await update.message.reply_text(
+                "❌ Example:\n/title @username Legend"
+            )
+
+        user_arg = context.args[0]
+        custom_title = " ".join(context.args[1:])
+
+        try:
+            if user_arg.startswith("@"):
+                target_chat = await context.bot.get_chat(user_arg)
+                target_user = target_chat
+            else:
+                target_user = await context.bot.get_chat(int(user_arg))
+        except:
+            return await update.message.reply_text(
+                "❌ User nahi mila."
+            )
+
+    # =========================
+    # Get target member
+    # =========================
+    try:
+        target_member = await context.bot.get_chat_member(
+            chat.id,
+            target_user.id
+        )
+    except:
+        return await update.message.reply_text(
+            "❌ User group mein nahi hai."
+        )
+
+    # =========================
+    # Promote member if needed
+    # =========================
+    try:
+
+        # Agar member hai toh admin banao minimal rights ke sath
+        if target_member.status == ChatMemberStatus.MEMBER:
+
+            await context.bot.promote_chat_member(
+                chat.id,
+                target_user.id,
+                can_manage_chat=False,
+                can_delete_messages=False,
+                can_manage_video_chats=False,
+                can_restrict_members=False,
+                can_promote_members=False,
+                can_change_info=False,
+                can_invite_users=False,
+                can_post_stories=False,
+                can_edit_stories=False,
+                can_delete_stories=False,
+                can_pin_messages=False,
+                is_anonymous=False,
+            )
+
+        # Title set
+        await context.bot.set_chat_administrator_custom_title(
+            chat.id,
+            target_user.id,
+            custom_title[:16]  # Telegram limit
+        )
+
+        await update.message.reply_text(
+            f"✅ {target_user.first_name} ka title change ho gaya:\n"
+            f"🏷️ {custom_title}"
+        )
+
+    except Exception as e:
+        await update.message.reply_text(
+            f"❌ Error:\n{e}"
+        )
+
+
+# =========================================================
+# Handler
+# =========================================================
+
+TITLE_HANDLER = CommandHandler("title", title_command)
 
 async def protect_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     register_user(update)

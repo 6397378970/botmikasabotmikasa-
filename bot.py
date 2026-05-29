@@ -41,7 +41,7 @@ logger = logging.getLogger(__name__)
 
 TOKEN = "8674194296:AAGqxTPggfH52IyefdVP8565SFOJcmspOwI"
 
-OWNERS = ['light_speedy', 'CD_Aanya', 'destroyer_speedy', 'light_speedi', 'ig_izumi']
+OWNERS = ['light_speedy', '6228812306', 'destroyer_speedy', 'light_speedi', 'ig_izumi']
 
 GIFT_ITEMS = {
     'rose':       {'emoji': '🌹', 'price': 500,  'name': 'Rᴏꜱᴇ'},

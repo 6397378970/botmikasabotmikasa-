@@ -285,8 +285,13 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     p = prefix(user)
 
     text = (
-        "✨ *Hey I'm 𝜧𝜾𝜿𝛼𝜹𝛼 and these are my features below* 👇"
+        "<emoji id='5454390891466726015'>👋</emoji> Hey I'm 𝜧𝜾𝜿𝛼𝜹𝛼 and these are my features below* 👇"
     )
+await update.message.reply_text(
+    text,
+    parse_mode="HTML",
+    reply_markup=InlineKeyboardMarkup(keyboard)
+)
 
     keyboard = [
         [

@@ -285,13 +285,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     p = prefix(user)
 
     text = (
-        "<emoji id='5454390891466726015'>👋</emoji> Hey I'm 𝜧𝜾𝜿𝛼𝜹𝛼 and these are my features below* 👇"
+        f"<emoji id='5454390891466726015'>👋</emoji> Hey I'm 𝜧𝜾𝜿𝛼𝜹𝛼 and these are my features below 👇"
     )
-await update.message.reply_text(
-    text,
-    parse_mode="HTML",
-    reply_markup=InlineKeyboardMarkup(keyboard)
-)
 
     keyboard = [
         [
@@ -325,8 +320,8 @@ await update.message.reply_text(
     await update.message.reply_photo(
         photo=photo,
         caption=text,
-        reply_markup=reply_markup,
-        parse_mode=ParseMode.MARKDOWN
+        parse_mode="HTML",
+        reply_markup=reply_markup
     )
     
 async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):

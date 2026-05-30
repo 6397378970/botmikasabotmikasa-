@@ -280,12 +280,14 @@ async def resolve_target(update: Update, context):
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     register_user(update)
 
-    u = update.effective_user
-    user = get_user(u.id)
-    p = prefix(user)
+    # Animated sticker
+    await update.message.reply_sticker(
+        "CAACAgQAAxkBAAEEQ-dqGwmMr9VMV51N5Us9PFU84rcnpAACfggAAjp_-FA8m1sAAa44Aws7BA"
+    )
 
     text = (
-        f"<emoji id='5454390891466726015'>👋</emoji> Hey I'm 𝜧𝜾𝜿𝛼𝜹𝛼 and these are my features below 👇"
+        "👋 Hey I'm 𝜧𝜾𝜿𝛼𝜹𝛼\n\n"
+        "✨ Fully featured game bot"
     )
 
     keyboard = [
@@ -313,15 +315,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]
     ]
 
-    reply_markup = InlineKeyboardMarkup(keyboard)
-
-    photo = "https://files.catbox.moe/bg4vn9.png"
-
     await update.message.reply_photo(
-        photo=photo,
+        photo="https://files.catbox.moe/bg4vn9.png",
         caption=text,
-       reply_markup=reply_markup,
-        parse_mode=ParseMode.MARKDOWN
+        reply_markup=InlineKeyboardMarkup(keyboard)
     )
     
 async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):

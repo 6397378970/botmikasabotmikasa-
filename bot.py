@@ -321,7 +321,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         photo=photo,
         caption=text,
        reply_markup=reply_markup,
-        parse_mode=ParseMode.HTML
+        parse_mode=ParseMode.MARKDOWN
     )
     
 async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):

@@ -320,8 +320,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=photo,
         caption=text,
-        parse_mode="HTML",
-        reply_markup=reply_markup
+       reply_markup=reply_markup,
+        parse_mode=ParseMode.MARKDOWN
     )
     
 async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):

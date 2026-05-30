@@ -286,7 +286,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
     text = (
-        "<tg-emoji emoji-id="5454390891466726015">👋</tg-emoji> Hey I'm 𝜧𝜾𝜿𝛼𝜹𝛼\n\n"
+        "<tg-emoji emoji-id='5454390891466726015'>👋</tg-emoji> Hey I'm 𝜧𝜾𝜿𝛼𝜹𝛼\n\n"
         "✨ Fully featured game bot"
     )
 

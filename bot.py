@@ -39,7 +39,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-TOKEN = "8674194296:AAGqxTPggfH52IyefdVP8565SFOJcmspOwI"
+TOKEN = ""
 
 OWNERS = ['Opx333', 'Rexxygodhu']
 

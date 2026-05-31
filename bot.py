@@ -293,17 +293,17 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [
             InlineKeyboardButton(
                 "👥 Groups",
-                url="https://t.me/+oZDt5OHL1UhlZTFh"
+                url="https://t.me/midnight_chatclub"
             ),
             InlineKeyboardButton(
                 "👑 Owner",
-                url="https://t.me/Opx333"
+                url="https://t.me/light_speedy"
             )
         ],
         [
             InlineKeyboardButton(
                 "📢 Channel",
-                url="https://t.me/botbchannel"
+                url="https://t.me/anonymous_rides"
             )
         ],
         [

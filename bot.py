@@ -282,7 +282,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # Animated sticker
     await update.message.reply_sticker(
-        "CAACAgQAAxkBAAEEQ-dqGwmMr9VMV51N5Us9PFU84rcnpAACfggAAjp_-FA8m1sAAa44Aws7BA"
+        "CAACAgUAAxkBAAEESUpqHEpbWXSGF3H1viH3rrJfGpwgsQACVAgAAjMPGVWQ0GRMRvUtzjsE"
     )
 
     text = (

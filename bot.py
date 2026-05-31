@@ -41,7 +41,7 @@ logger = logging.getLogger(__name__)
 
 TOKEN = "8674194296:AAGqxTPggfH52IyefdVP8565SFOJcmspOwI"
 
-OWNERS = ['light_speedy', '6228812306', 'destroyer_speedy', 'light_speedi', 'ig_izumi']
+OWNERS = ['light_speedy', 'Opx333', 'destroyer_speedy', 'light_speedi', 'ig_izumi']
 
 GIFT_ITEMS = {
     'rose':       {'emoji': '🌹', 'price': 500,  'name': 'Rᴏꜱᴇ'},
@@ -293,17 +293,17 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [
             InlineKeyboardButton(
                 "👥 Groups",
-                url="https://t.me/midnight_chatclub"
+                url="https://t.me/+oZDt5OHL1UhlZTFh"
             ),
             InlineKeyboardButton(
                 "👑 Owner",
-                url="https://t.me/light_speedy"
+                url="https://t.me/Opx333"
             )
         ],
         [
             InlineKeyboardButton(
                 "📢 Channel",
-                url="https://t.me/anonymous_rides"
+                url="https://t.me/botbchannel"
             )
         ],
         [

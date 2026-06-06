@@ -297,8 +297,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ),
             InlineKeyboardButton(
                 "👑 Owner",
-                url="https://t.me/light_speedy",
-                style=ButtonStyle.DANGER
+                url="https://t.me/light_speedy"
             )
         ],
         [

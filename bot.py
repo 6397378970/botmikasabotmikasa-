@@ -41,7 +41,7 @@ logger = logging.getLogger(__name__)
 
 TOKEN = "8691831689:AAETsF-RGD7_CkXZKR6CEOdxU1DtMbFYGYA"
 
-OWNERS = ['light_speedy', 'destroyer_speedy', 'light_speedi']
+OWNERS = ['light_speedy', 'destroyer_speedy', 'light_speedi', 'Shuekh_07']
 
 GIFT_ITEMS = {
     'rose':       {'emoji': '🌹', 'price': 500,  'name': 'Rᴏꜱᴇ'},
@@ -60,7 +60,7 @@ GIFT_ITEMS = {
 }
 
 WORDS = [
-    'pikachu', 'telegram', 'python', 'gaming', 'winner', 'dragon',
+    'mikasa', 'telegram', 'python', 'gaming', 'winner', 'dragon',
     'thunder', 'rainbow', 'galaxy', 'warrior', 'champion', 'diamond',
     'crystal', 'shadow', 'ninja', 'rocket', 'legend', 'phoenix',
     'cobra', 'tiger', 'panther', 'falcon', 'storm', 'blaze', 'spark',
@@ -286,7 +286,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
     text = (
-        "Hey I'm 𝜧𝜾𝜿𝛼𝜹𝛼\n\n"
+        "Hey I'm 𝐩𝐢𝐤𝐮💞\n\n"
         "✨ Fully featured game bot"
     )
     keyboard = [
@@ -297,7 +297,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ),
             InlineKeyboardButton(
                 "👑 Owner",
-                url="https://t.me/light_speedy"
+                url="https://t.me/Shuekh_07"
             )
         ],
         [
@@ -315,7 +315,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ]
 
     await update.message.reply_photo(
-        photo="https://files.catbox.moe/bg4vn9.png",
+        photo="https://files.catbox.moe/z89po3.jpg",
         caption=text,
         reply_markup=InlineKeyboardMarkup(keyboard)
     )
@@ -323,7 +323,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     register_user(update)
     text = (
-        "⚡ *𝜧𝜾𝜿𝛼𝜹𝛼 Bᴏᴛ — Cᴏᴍᴍᴀɴᴅꜱ* 🎮\n\n"
+        "⚡ *𝐩𝐢𝐤𝐮💞 Bᴏᴛ — Cᴏᴍᴍᴀɴᴅꜱ* 🎮\n\n"
         "💰 *Eᴄᴏɴᴏᴍʏ:*\n"
         "`/bal` — Balance check\n"
         "`/daily` — Daily reward\n"
